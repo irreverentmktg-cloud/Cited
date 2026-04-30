@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cited — Visual Identity Mood Board v2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+
+    /* ─── BASE ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #f0f0f0;
+      font-family: 'Inter', system-ui, sans-serif;
+      color: #0a0a0a;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page { max-width: 1200px; margin: 0 auto; padding: 60px 48px 120px; }
+    section { margin-bottom: 96px; }
+    .section-label {
+      font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase; color: #9b9b9b;
+      margin-bottom: 32px; display: flex; align-items: center; gap: 16px;
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1px; background: #e0e0e0;
+    }
+
+    /* ─── CHROME EFFECTS ───────────────────────────────────────── */
+    .chrome-surface {
+      background: linear-gradient(135deg, #f7f7f7 0%, #ebebeb 40%, #f5f5f5 70%, #eaeaea 100%);
+    }
+    .chrome-border {
+      border: 1px solid transparent;
+      background-clip: padding-box;
+      position: relative;
+    }
+    .chrome-border::before {
+      content: '';
+      position: absolute; inset: -1px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(180,180,180,0.4), rgba(255,255,255,0.7));
+      border-radius: inherit;
+      z-index: -1;
+    }
+    .glass {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+
+    /* ─── HEADER ───────────────────────────────────────────────── */
+    .moodboard-header {
+      padding: 80px 0 72px;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      border-bottom: 1px solid #d8d8d8; margin-bottom: 72px;
+    }
+    .logo-mark {
+      font-size: 72px; font-weight: 800; letter-spacing: -0.04em;
+      color: #0a0a0a; line-height: 1;
+    }
+    .logo-mark span {
+      background: linear-gradient(135deg, #c0c0c0 0%, #8a8a8a 30%, #d4d4d4 55%, #9a9a9a 80%, #c8c8c8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo-tagline {
+      font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 400;
+      color: #9b9b9b; letter-spacing: 0.12em; text-transform: uppercase;
+      margin-top: 12px;
+    }
+    .header-meta { text-align: right; }
+    .header-meta-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase; color: #c0c0c0;
+      margin-bottom: 6px;
+    }
+    .header-meta-title { font-size: 14px; font-weight: 500; color: #5c5c5c; }
+
+    /* ─── COLORS ───────────────────────────────────────────────── */
+    .color-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 16px; }
+    .swatch { border-radius: 8px; overflow: hidden; }
+    .swatch-color { height: 80px; width: 100%; }
+    .swatch-info { padding: 10px 2px; }
+    .swatch-name {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      color: #5c5c5c; letter-spacing: 0.08em; display: block; margin-bottom: 3px;
+    }
+    .swatch-hex { font-family: 'DM Mono', monospace; font-size: 10px; color: #9b9b9b; }
+
+    /* ─── TYPOGRAPHY ───────────────────────────────────────────── */
+    .type-samples {
+      background: #ffffff; border: 1px solid #e8e8e8; border-radius: 12px;
+      padding: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+    }
+    .type-role {
+      font-family: 'DM Mono', monospace; font-size: 10px; color: #b0b0b0;
+      letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 14px;
+    }
+    .type-display { font-size: 52px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
+    .type-heading { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; }
+    .type-sub { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+    .type-body { font-size: 16px; font-weight: 400; color: #4a4a4a; line-height: 1.65; }
+    .type-small { font-size: 14px; font-weight: 500; color: #5c5c5c; }
+    .type-mono { font-family: 'DM Mono', monospace; font-size: 13px; color: #7a7a7a; letter-spacing: 0.06em; }
+    .type-label {
+      font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.16em; text-transform: uppercase; color: #9b9b9b;
+    }
+
+    /* ─── CHROME COMPONENT CARD ────────────────────────────────── */
+    .chrome-card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow:
+        0 0 0 1px rgba(0,0,0,0.06),
+        0 2px 4px rgba(0,0,0,0.04),
+        0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    /* ─── SUGGESTION CARDS (vidIQ-style) ───────────────────────── */
+    .suggestion-feed { display: flex; flex-direction: column; gap: 16px; }
+    .suggestion-card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.07), 0 2px 8px rgba(0,0,0,0.05);
+      overflow: hidden;
+      transition: box-shadow 0.15s;
+    }
+    .suggestion-card:hover {
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.1), 0 4px 16px rgba(0,0,0,0.09);
+    }
+    .sc-header {
+      padding: 16px 20px 14px;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .sc-type { display: flex; align-items: center; gap: 8px; }
+    .sc-icon {
+      width: 26px; height: 26px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+    }
+    .sc-icon--prompt { background: #f0f0f0; }
+    .sc-icon--content { background: #f0f4ff; }
+    .sc-icon--brand { background: #fff8f0; }
+    .sc-type-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase; color: #9b9b9b;
+    }
+    .sc-actions-top { display: flex; align-items: center; gap: 8px; }
+    .sc-dismiss {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1px solid #e8e8e8; background: #ffffff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; color: #c0c0c0; cursor: pointer;
+    }
+    .sc-dismiss:hover { background: #f5f5f5; color: #8a8a8a; }
+
+    .sc-body { padding: 20px; }
+    .sc-prompt-text {
+      font-size: 15px; font-weight: 600; color: #0a0a0a;
+      line-height: 1.4; margin-bottom: 14px;
+    }
+    .sc-prompt-text em {
+      font-style: normal;
+      background: linear-gradient(135deg, #d0d0d0, #a0a0a0, #d0d0d0);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; font-weight: 800;
+    }
+    .sc-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .sc-meta-item {
+      font-family: 'DM Mono', monospace; font-size: 11px; color: #9b9b9b;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .sc-meta-dot { width: 5px; height: 5px; border-radius: 50%; background: #22c55e; }
+    .sc-meta-dot--red { background: #ef4444; }
+    .sc-meta-dot--yellow { background: #f59e0b; }
+
+    .sc-content-suggestion {
+      background: #f8f8f8; border: 1px solid #eeeeee;
+      border-radius: 8px; padding: 16px; margin-bottom: 16px;
+    }
+    .sc-suggestion-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #b0b0b0; margin-bottom: 8px;
+    }
+    .sc-suggestion-text { font-size: 14px; color: #2a2a2a; line-height: 1.55; }
+
+    .sc-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .chip {
+      padding: 6px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 500; cursor: pointer;
+      border: 1px solid; transition: all 0.12s;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .chip--default { background: #f5f5f5; border-color: #e5e5e5; color: #4a4a4a; }
+    .chip--default:hover { background: #eeeeee; border-color: #d8d8d8; }
+    .chip--selected { background: #0a0a0a; border-color: #0a0a0a; color: #ffffff; }
+    .chip--confirm { background: #f0fdf4; border-color: #86efac; color: #15803d; }
+    .chip--reject { background: #fef2f2; border-color: #fca5a5; color: #dc2626; }
+
+    .sc-footer {
+      padding: 14px 20px;
+      border-top: 1px solid #f0f0f0;
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fafafa;
+    }
+    .sc-footer-left { display: flex; align-items: center; gap: 8px; }
+    .btn-check {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: #0a0a0a; color: #ffffff;
+      border: none; border-radius: 7px; padding: 9px 16px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .btn-check:hover { background: #1a1a1a; }
+    .btn-skip {
+      background: transparent; border: 1px solid #e5e5e5; color: #6b6b6b;
+      border-radius: 7px; padding: 9px 14px;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+    }
+    .btn-skip:hover { border-color: #c0c0c0; }
+    .sc-streak {
+      font-family: 'DM Mono', monospace; font-size: 11px; color: #9b9b9b;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .streak-dot { font-size: 14px; }
+
+    /* ─── BRAND CALIBRATION CARD ──────────────────────────────── */
+    .calibration-card {
+      background: #ffffff; border-radius: 12px;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.06);
+      padding: 32px;
+    }
+    .cal-header { margin-bottom: 24px; }
+    .cal-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .cal-sub { font-size: 14px; color: #6b6b6b; }
+    .cal-items { display: flex; flex-direction: column; gap: 10px; }
+    .cal-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px;
+      background: #f8f8f8; border: 1px solid #eeeeee; border-radius: 9px;
+    }
+    .cal-item-text { font-size: 14px; color: #1a1a1a; }
+    .cal-item-text span { font-weight: 600; }
+    .cal-check-x { display: flex; gap: 8px; }
+    .btn-x {
+      width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid #e5e5e5;
+      background: white; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; cursor: pointer; color: #c0c0c0;
+    }
+    .btn-x:hover { border-color: #fca5a5; color: #ef4444; background: #fef2f2; }
+    .btn-checkmark {
+      width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid #e5e5e5;
+      background: white; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; cursor: pointer; color: #c0c0c0;
+    }
+    .btn-checkmark:hover { border-color: #86efac; color: #22c55e; background: #f0fdf4; }
+    .btn-checkmark.active { border-color: #22c55e; color: #22c55e; background: #f0fdf4; }
+    .btn-x.active { border-color: #ef4444; color: #ef4444; background: #fef2f2; }
+
+    /* ─── PROGRESS BAR / PROMPT SLOTS ─────────────────────────── */
+    .prompt-meter {
+      background: #ffffff; border: 1px solid #e8e8e8; border-radius: 12px;
+      padding: 24px 28px;
+    }
+    .pm-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .pm-label { font-size: 14px; font-weight: 600; }
+    .pm-count { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: #4a4a4a; }
+    .pm-bar { height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden; margin-bottom: 12px; }
+    .pm-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, #888888 0%, #c0c0c0 50%, #888888 100%);
+      background-size: 200% 100%;
+      animation: chrome-shimmer 2.5s linear infinite;
+    }
+    @keyframes chrome-shimmer {
+      0% { background-position: 200% center; }
+      100% { background-position: -200% center; }
+    }
+    .pm-sub { font-size: 12px; color: #9b9b9b; display: flex; justify-content: space-between; }
+    .pm-upgrade { color: #0a0a0a; font-weight: 600; cursor: pointer; }
+    .pm-fill--full {
+      background: linear-gradient(90deg, #0a0a0a 0%, #3a3a3a 50%, #0a0a0a 100%);
+    }
+    .pm-label--alert { color: #0a0a0a; }
+
+    /* ─── LOCKED CARD ──────────────────────────────────────────── */
+    .locked-card {
+      position: relative; overflow: hidden;
+      background: #ffffff; border-radius: 12px;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.07), 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .locked-content {
+      padding: 20px;
+      filter: blur(4px);
+      user-select: none; pointer-events: none;
+    }
+    .locked-overlay {
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(2px);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 24px;
+    }
+    .lock-icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, #e0e0e0, #c0c0c0, #d8d8d8);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .lock-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .lock-sub { font-size: 12px; color: #6b6b6b; margin-bottom: 16px; line-height: 1.5; }
+    .btn-upgrade {
+      background: #0a0a0a; color: #ffffff;
+      border: none; border-radius: 7px; padding: 10px 20px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .btn-upgrade:hover { background: #1e1e1e; }
+
+    /* ─── CITATION ALERT ───────────────────────────────────────── */
+    .citation-alert {
+      background: #ffffff; border-radius: 12px;
+      border: 1px solid #e8e8e8;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 20px 24px;
+      display: flex; align-items: flex-start; gap: 16px;
+    }
+    .alert-icon {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: linear-gradient(135deg, #f0f0f0, #dcdcdc);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+    .alert-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #22c55e; margin-bottom: 4px;
+    }
+    .alert-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .alert-sub { font-size: 13px; color: #6b6b6b; line-height: 1.45; }
+    .alert-time { font-family: 'DM Mono', monospace; font-size: 10px; color: #c0c0c0; margin-top: 8px; }
+
+    /* ─── SCORE RING ───────────────────────────────────────────── */
+    .score-display { display: flex; align-items: center; gap: 32px; }
+    .score-circle-wrap { position: relative; width: 120px; height: 120px; }
+    .score-circle { width: 120px; height: 120px; }
+    .score-circle-bg { fill: none; stroke: #f0f0f0; stroke-width: 8; }
+    .score-circle-fill {
+      fill: none; stroke-width: 8;
+      stroke-linecap: round;
+      transform: rotate(-90deg); transform-origin: 60px 60px;
+      stroke-dasharray: 314;
+      transition: stroke-dashoffset 1s ease;
+    }
+    /* v2: color-coded rings — solid color + animated shimmer arc on top */
+    .score-circle-fill--red    { stroke: #ef4444; stroke-dashoffset: 204; }
+    .score-circle-fill--yellow { stroke: #f59e0b; stroke-dashoffset: 126; }
+    .score-circle-fill--green  { stroke: #22c55e; stroke-dashoffset: 94;  }
+
+    /* Shimmer arcs — dashoffset animates the bright spot
+       along the arc only, stopping at the arc's edge.
+       stroke-dasharray: 30px bright + 284px gap = 314 circumference.
+       Start offset = 284 (shimmer at position 0 of arc).
+       End offset   = arc's own dashoffset (shimmer at arc's end). */
+    .ring-shine-arc {
+      fill: none;
+      stroke: rgba(255,255,255,0.62);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 30 284;
+      transform-origin: 60px 60px;
+      transform: rotate(-90deg);  /* align with colored arc */
+    }
+
+    @keyframes shine-red {
+      0%   { stroke-dashoffset: 284; opacity: 0; }
+      8%   { opacity: 1; }
+      84%  { opacity: 1; }
+      100% { stroke-dashoffset: 204; opacity: 0; }
+    }
+    @keyframes shine-yellow {
+      0%   { stroke-dashoffset: 284; opacity: 0; }
+      6%   { opacity: 1; }
+      88%  { opacity: 1; }
+      100% { stroke-dashoffset: 126; opacity: 0; }
+    }
+    @keyframes shine-green {
+      0%   { stroke-dashoffset: 284; opacity: 0; }
+      5%   { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { stroke-dashoffset: 94; opacity: 0; }
+    }
+    .ring-shine-red    { animation: shine-red    2.4s ease-in-out infinite; }
+    .ring-shine-yellow { animation: shine-yellow 3.2s ease-in-out infinite; }
+    .ring-shine-green  { animation: shine-green  3.8s ease-in-out infinite; }
+
+    .score-inner {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .score-num {
+      font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 700;
+      line-height: 1;
+    }
+    /* v2: number matches ring */
+    .score-num--red    { color: #ef4444; }
+    .score-num--yellow { color: #f59e0b; }
+    .score-num--green  { color: #22c55e; }
+
+    .score-denom { font-family: 'DM Mono', monospace; font-size: 13px; color: #b0b0b0; }
+    .score-detail-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #9b9b9b; margin-bottom: 6px;
+    }
+    .score-detail-val { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+    .score-detail-sub { font-size: 13px; color: #6b6b6b; margin-top: 2px; }
+    .score-detail-tag {
+      display: inline-block; margin-top: 12px;
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 20px;
+    }
+    .tag-critical  { background: #fef2f2; color: #dc2626; }
+    .tag-warning   { background: #fffbeb; color: #b45309; }
+    .tag-improving { background: #f0fdf4; color: #15803d; }
+
+    /* ─── CHROME BUTTON VARIANTS ───────────────────────────────── */
+    .btn-chrome {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 22px; border-radius: 8px; border: none;
+      cursor: pointer; font-size: 14px; font-weight: 600;
+    }
+    .btn-chrome--primary { background: #0a0a0a; color: #ffffff; }
+    .btn-chrome--primary:hover { background: #1a1a1a; }
+    .btn-chrome--chrome {
+      background: linear-gradient(180deg, #f0f0f0 0%, #e0e0e0 100%);
+      color: #2a2a2a;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset,
+                  0 -1px 0 rgba(0,0,0,0.1) inset,
+                  0 1px 3px rgba(0,0,0,0.12);
+      border: 1px solid rgba(0,0,0,0.12);
+    }
+    .btn-chrome--chrome:hover { background: linear-gradient(180deg, #e8e8e8 0%, #d8d8d8 100%); }
+    .btn-chrome--ghost { background: transparent; color: #4a4a4a; border: 1px solid #e0e0e0; }
+    .btn-chrome--ghost:hover { border-color: #b0b0b0; color: #0a0a0a; }
+
+    /* ─── PROMPT METER ─────────────────────────────────────────── */
+    .feed-preview { display: grid; grid-template-columns: 260px 1fr; gap: 24px; }
+    .feed-sidebar { background: #ffffff; border-radius: 12px; border: 1px solid #e8e8e8; overflow: hidden; }
+    .feed-sb-header {
+      padding: 20px; border-bottom: 1px solid #f0f0f0;
+      background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
+    }
+    .feed-sb-brand { font-size: 15px; font-weight: 700; }
+    .feed-sb-cat { font-family: 'DM Mono', monospace; font-size: 10px; color: #b0b0b0; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
+    .feed-sb-score { padding: 20px; border-bottom: 1px solid #f0f0f0; text-align: center; }
+    .feed-nav { padding: 12px 0; }
+    .feed-nav-item {
+      padding: 9px 20px; display: flex; align-items: center; gap: 10px;
+      font-size: 13px; font-weight: 500; color: #6b6b6b; cursor: pointer;
+    }
+    .feed-nav-item:hover { background: #f8f8f8; color: #0a0a0a; }
+    .feed-nav-item.active { color: #0a0a0a; font-weight: 600; }
+    .feed-nav-icon { font-size: 15px; }
+    .feed-nav-badge {
+      margin-left: auto;
+      background: #0a0a0a; color: white;
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 600;
+      padding: 2px 7px; border-radius: 10px;
+    }
+    .feed-main { display: flex; flex-direction: column; gap: 12px; }
+    .feed-date-header {
+      font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #b0b0b0; padding: 8px 0;
+    }
+
+    /* ─── UPGRADE GATE ─────────────────────────────────────────── */
+    .upgrade-gate {
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+      border-radius: 12px; padding: 32px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .ug-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      background: linear-gradient(135deg, #c0c0c0, #888888, #c0c0c0);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 8px;
+    }
+    .ug-title { font-size: 22px; font-weight: 800; color: #ffffff; margin-bottom: 8px; letter-spacing: -0.02em; }
+    .ug-sub { font-size: 14px; color: #888888; max-width: 380px; line-height: 1.55; }
+    .ug-features { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .ug-feature {
+      font-size: 13px; color: #b0b0b0;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .ug-feature::before {
+      content: '→';
+      background: linear-gradient(135deg, #c0c0c0, #888888);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; font-weight: 700;
+    }
+    .ug-right { flex-shrink: 0; }
+    .btn-upgrade-large {
+      display: flex; flex-direction: column; align-items: center;
+      background: linear-gradient(135deg, #f0f0f0 0%, #d8d8d8 40%, #e8e8e8 70%, #d0d0d0 100%);
+      color: #0a0a0a;
+      border: none; border-radius: 10px; padding: 20px 32px;
+      cursor: pointer;
+      box-shadow: 0 2px 0 rgba(255,255,255,0.1) inset, 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .btn-upgrade-large:hover {
+      background: linear-gradient(135deg, #e8e8e8 0%, #d0d0d0 40%, #e0e0e0 70%, #c8c8c8 100%);
+    }
+    .btn-ul-price { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+    .btn-ul-label { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #5a5a5a; margin-top: 4px; }
+    .btn-ul-cta { font-size: 13px; font-weight: 700; margin-top: 12px; color: #0a0a0a; }
+
+    /* ─── TEXTURE SWATCHES ─────────────────────────────────────── */
+    .texture-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .texture-tile { height: 160px; border-radius: 12px; display: flex; align-items: flex-end; padding: 16px; }
+    .texture-label { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #6b6b6b; }
+    .tx-white { background: #ffffff; border: 1px solid #e8e8e8; }
+    .tx-offwhite { background: #f8f8f8; border: 1px solid #eeeeee; }
+    .tx-chrome { background: linear-gradient(135deg, #f7f7f7 0%, #e8e8e8 25%, #f2f2f2 50%, #dcdcdc 75%, #f0f0f0 100%); }
+    .tx-glass {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.8);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    /* layout helpers */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ─── HEADER ─────────────────────────────────────────────── -->
+  <div class="moodboard-header">
+    <div>
+      <div class="logo-mark">Cited<span>.</span></div>
+      <div class="logo-tagline">AEO Platform · Visual Identity · Mood Board</div>
+    </div>
+    <div class="header-meta">
+      <div class="header-meta-label">Iteration</div>
+      <div class="header-meta-title">02 · Color-coded scores · Chrome everywhere else</div>
+    </div>
+  </div>
+
+  <!-- ─── COLORS ─────────────────────────────────────────────── -->
+  <section>
+    <div class="section-label">Color System</div>
+    <div class="color-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#0a0a0a;"></div>
+        <div class="swatch-info"><span class="swatch-name">Ink Black</span><span class="swatch-hex">#0a0a0a</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#2a2a2a;"></div>
+        <div class="swatch-info"><span class="swatch-name">Rich Dark</span><span class="swatch-hex">#2a2a2a</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#6b6b6b;"></div>
+        <div class="swatch-info"><span class="swatch-name">Mid Gray</span><span class="swatch-hex">#6b6b6b</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#b0b0b0; border: 1px solid #e8e8e8;"></div>
+        <div class="swatch-info"><span class="swatch-name">Silver</span><span class="swatch-hex">#b0b0b0</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#e5e5e5; border: 1px solid #eeeeee;"></div>
+        <div class="swatch-info"><span class="swatch-name">Light Gray</span><span class="swatch-hex">#e5e5e5</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#f5f5f5; border: 1px solid #eeeeee;"></div>
+        <div class="swatch-info"><span class="swatch-name">Off-White</span><span class="swatch-hex">#f5f5f5</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#ffffff; border: 1px solid #e8e8e8;"></div>
+        <div class="swatch-info"><span class="swatch-name">Pure White</span><span class="swatch-hex">#ffffff</span></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background: linear-gradient(135deg, #f0f0f0 0%, #c8c8c8 30%, #e8e8e8 55%, #b8b8b8 80%, #d8d8d8 100%);"></div>
+        <div class="swatch-info"><span class="swatch-name">Chrome</span><span class="swatch-hex">Gradient</span></div>
+      </div>
+    </div>
+
+    <!-- Score colors — v2 addition -->
+    <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(3, auto) 1fr; gap: 16px; align-items: start;">
+      <div class="swatch" style="width: 120px;">
+        <div class="swatch-color" style="background:#ef4444; height:56px;"></div>
+        <div class="swatch-info"><span class="swatch-name">Score: Critical</span><span class="swatch-hex">#ef4444 · 0–39</span></div>
+      </div>
+      <div class="swatch" style="width: 120px;">
+        <div class="swatch-color" style="background:#f59e0b; height:56px;"></div>
+        <div class="swatch-info"><span class="swatch-name">Score: Warning</span><span class="swatch-hex">#f59e0b · 40–69</span></div>
+      </div>
+      <div class="swatch" style="width: 120px;">
+        <div class="swatch-color" style="background:#22c55e; height:56px;"></div>
+        <div class="swatch-info"><span class="swatch-name">Score: Good</span><span class="swatch-hex">#22c55e · 70–100</span></div>
+      </div>
+      <div style="font-size: 12px; color: #9b9b9b; padding-top: 8px; font-family: 'DM Mono', monospace; letter-spacing: 0.06em; line-height: 1.6;">
+        Score colors used only on: ring stroke, score number, status tag.<br>Everything else — cards, buttons, nav, chrome — stays monochrome.
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TYPOGRAPHY ─────────────────────────────────────────── -->
+  <section>
+    <div class="section-label">Typography — Inter</div>
+    <div class="type-samples">
+      <div>
+        <div class="type-role">Display / Hero — 800</div>
+        <div class="type-display">Is your brand<br>the answer?</div>
+      </div>
+      <div>
+        <div class="type-role">Section Heading — 700</div>
+        <div class="type-heading">From invisible<br>to cited in 4 steps.</div>
+      </div>
+      <div>
+        <div class="type-role">Card Title — 600</div>
+        <div class="type-sub">Daily prompt: rank for this</div>
+        <div style="margin-top: 20px;">
+          <div class="type-role">Body Copy — 400</div>
+          <div class="type-body">Cited scans your category across ChatGPT, Perplexity, and Gemini and surfaces the exact prompts you're invisible in — then tells you what to do about it.</div>
+        </div>
+      </div>
+      <div>
+        <div class="type-role">Label / Kicker — DM Mono 500</div>
+        <div class="type-label">Prompt Monitoring · 50 Active</div>
+        <div style="margin-top: 20px;">
+          <div class="type-role">Score Metric — DM Mono 700 · color-coded</div>
+          <div style="font-family: 'DM Mono', monospace; font-size: 48px; font-weight: 700; letter-spacing: -0.02em; color: #ef4444;">34<span style="font-size: 24px; color: #b0b0b0;">/100</span></div>
+        </div>
+        <div style="margin-top: 20px;">
+          <div class="type-role">Small / Helper — 500</div>
+          <div class="type-small">No SEO knowledge required · 2-minute setup</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TEXTURES & SURFACES ────────────────────────────────── -->
+  <section>
+    <div class="section-label">Surfaces & Texture</div>
+    <div class="texture-grid">
+      <div class="texture-tile tx-white"><div class="texture-label">Pure White · Cards</div></div>
+      <div class="texture-tile tx-offwhite"><div class="texture-label">Off-White · Page BG</div></div>
+      <div class="texture-tile tx-chrome"><div class="texture-label">Chrome · Accents</div></div>
+      <div class="texture-tile tx-glass"><div class="texture-label">Glass · Overlays</div></div>
+    </div>
+  </section>
+
+  <!-- ─── BUTTONS ────────────────────────────────────────────── -->
+  <section>
+    <div class="section-label">Buttons</div>
+    <div style="background: #ffffff; border-radius: 12px; border: 1px solid #e8e8e8; padding: 32px;">
+      <div class="btn-row">
+        <button class="btn-chrome btn-chrome--primary">Analyze My Brand →</button>
+        <button class="btn-chrome btn-chrome--chrome">Generate Draft</button>
+        <button class="btn-chrome btn-chrome--ghost">Skip for now</button>
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
+          <div class="btn-checkmark" style="width:42px;height:42px;border-radius:50%;border:1.5px solid #86efac;background:#f0fdf4;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;color:#22c55e;">✓</div>
+          <div class="btn-x" style="width:42px;height:42px;border-radius:50%;border:1.5px solid #e5e5e5;background:white;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;color:#c0c0c0;">✕</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SCORE RING ──────────────────────────────────────────── -->
+  <section>
+    <div class="section-label">Score Components — v2: Color-Coded Rings</div>
+    <div class="three-col">
+
+      <!-- Critical score — red -->
+      <div class="chrome-card" style="padding: 32px;">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #b0b0b0; margin-bottom: 24px;">AI VISIBILITY SCORE</div>
+        <div class="score-display">
+          <div class="score-circle-wrap">
+            <svg class="score-circle" viewBox="0 0 120 120">
+              <circle class="score-circle-bg" cx="60" cy="60" r="50"/>
+              <circle class="score-circle-fill score-circle-fill--red" cx="60" cy="60" r="50"/>
+              <circle class="ring-shine-arc ring-shine-red" cx="60" cy="60" r="50"/>
+            </svg>
+            <div class="score-inner">
+              <span class="score-num score-num--red">34</span>
+              <span class="score-denom">/100</span>
+            </div>
+          </div>
+          <div class="score-details">
+            <div class="score-detail-label">Category Rank</div>
+            <div class="score-detail-val">#4 of 6</div>
+            <div class="score-detail-sub">Bloom Collagen · Supplements</div>
+            <div class="score-detail-tag tag-critical">Critical — 7 gaps</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warning score — yellow -->
+      <div class="chrome-card" style="padding: 32px;">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #b0b0b0; margin-bottom: 24px;">AI VISIBILITY SCORE</div>
+        <div class="score-display">
+          <div class="score-circle-wrap">
+            <svg class="score-circle" viewBox="0 0 120 120">
+              <circle class="score-circle-bg" cx="60" cy="60" r="50"/>
+              <circle class="score-circle-fill score-circle-fill--yellow" cx="60" cy="60" r="50"/>
+              <circle class="ring-shine-arc ring-shine-yellow" cx="60" cy="60" r="50"/>
+            </svg>
+            <div class="score-inner">
+              <span class="score-num score-num--yellow">58</span>
+              <span class="score-denom">/100</span>
+            </div>
+          </div>
+          <div class="score-details">
+            <div class="score-detail-label">Category Rank</div>
+            <div class="score-detail-val">#3 of 6</div>
+            <div class="score-detail-sub">Bloom Collagen · Supplements</div>
+            <div class="score-detail-tag tag-warning">Improving — 3 gaps</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Good score — green -->
+      <div class="chrome-card" style="padding: 32px;">
+        <div style="font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #b0b0b0; margin-bottom: 24px;">AI VISIBILITY SCORE</div>
+        <div class="score-display">
+          <div class="score-circle-wrap">
+            <svg class="score-circle" viewBox="0 0 120 120">
+              <circle class="score-circle-bg" cx="60" cy="60" r="50"/>
+              <circle class="score-circle-fill score-circle-fill--green" cx="60" cy="60" r="50"/>
+              <circle class="ring-shine-arc ring-shine-green" cx="60" cy="60" r="50"/>
+            </svg>
+            <div class="score-inner">
+              <span class="score-num score-num--green">71</span>
+              <span class="score-denom">/100</span>
+            </div>
+          </div>
+          <div class="score-details">
+            <div class="score-detail-label">Category Rank</div>
+            <div class="score-detail-val">#1 of 6</div>
+            <div class="score-detail-sub">Bloom Collagen · Supplements</div>
+            <div class="score-detail-tag tag-improving">↑ 37 pts since joining</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── PROMPT METER ────────────────────────────────────────── -->
+  <section>
+    <div class="section-label">Prompt Slot Meter (Gamification)</div>
+    <div class="three-col">
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#b0b0b0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;">In progress — 47/50</div>
+        <div class="prompt-meter">
+          <div class="pm-header">
+            <span class="pm-label">Prompt Slots</span>
+            <span class="pm-count">47 / 50</span>
+          </div>
+          <div class="pm-bar"><div class="pm-fill" style="width:94%;"></div></div>
+          <div class="pm-sub">
+            <span>3 slots remaining</span>
+            <span class="pm-upgrade">Upgrade ↗</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#b0b0b0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;">Full — upgrade prompt</div>
+        <div class="prompt-meter">
+          <div class="pm-header">
+            <span class="pm-label pm-label--alert">Slots Full</span>
+            <span class="pm-count" style="color:#0a0a0a;font-weight:700;">50 / 50</span>
+          </div>
+          <div class="pm-bar"><div class="pm-fill pm-fill--full" style="width:100%;"></div></div>
+          <div class="pm-sub">
+            <span>Add 150 more prompts</span>
+            <span class="pm-upgrade" style="color:#0a0a0a;font-weight:700;">→ Upgrade to Growth</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:10px;color:#b0b0b0;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;">Daily streak</div>
+        <div class="chrome-card" style="padding: 20px 24px;">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:#b0b0b0;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;">Optimization Streak</div>
+          <div style="font-size:36px;font-weight:800;letter-spacing:-0.03em;">7</div>
+          <div style="font-size:13px;color:#6b6b6b;margin-top:4px;">days in a row 🔥</div>
+          <div style="margin-top:16px;display:flex;gap:6px;">
+            <div style="flex:1;height:4px;border-radius:2px;background:#0a0a0a;"></div>
+            <div style="flex:1;height:4px;border-radius:2px;background:#0a0a0a;"></div>
+            <div style="flex:1;height:4px;border-radius:2px;background:#0a0a0a;"></div>
+            <div style="flex:1;height:4px;border-radius:2px;background:#0a0a0a;"></div>
+            <div style="flex:1;height:4px;border-radius:2px;background:#0a0a0a;"></div>
+            <div style="flex:1;height:4px;border-radius:2px;background:#0a0a0a;"></div>
+            <div style="flex:1;height:4px;border-radius:2px;background:#0a0a0a;"></div>
+            <div style="flex:1;height:4px;border-radius:2px;background:#e5e5e5;"></div>
+            <div style="flex:1;height:4px;border-radius:2px;background:#e5e5e5;"></div>
+            <div style="flex:1;height:4px;border-radius:2px;background:#e5e5e5;"></div>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:#b0b0b0;margin-top:6px;">Next milestone: 14 days</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── BRAND CALIBRATION CARD ─────────────────────────────── -->
+  <section>
+    <div class="section-label">Brand Calibration — Check / X Onboarding</div>
+    <div class="two-col">
+      <div class="calibration-card">
+        <div class="cal-header">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:#b0b0b0;margin-bottom:8px;">Brand Calibration · Step 1 of 3</div>
+          <div class="cal-title">We scanned your site. Confirm what we found.</div>
+          <div class="cal-sub">Tap ✓ to confirm or ✕ to remove. We'll use this to find the right prompts for you.</div>
+        </div>
+        <div class="cal-items">
+          <div class="cal-item">
+            <div class="cal-item-text">Product: <span>Marine collagen peptide supplement</span></div>
+            <div class="cal-check-x">
+              <button class="btn-x">✕</button>
+              <button class="btn-checkmark active">✓</button>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-item-text">Primary claim: <span>Joint health & skin elasticity</span></div>
+            <div class="cal-check-x">
+              <button class="btn-x">✕</button>
+              <button class="btn-checkmark active">✓</button>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-item-text">Target buyer: <span>Women 35–55</span></div>
+            <div class="cal-check-x">
+              <button class="btn-x">✕</button>
+              <button class="btn-checkmark">✓</button>
+            </div>
+          </div>
+          <div class="cal-item" style="border: 1.5px solid #ef4444; background: #fef2f2;">
+            <div class="cal-item-text">Price position: <span>Budget / value</span></div>
+            <div class="cal-check-x">
+              <button class="btn-x active">✕</button>
+              <button class="btn-checkmark">✓</button>
+            </div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-item-text">Key differentiator: <span>Grass-fed, unflavored, hydrolyzed</span></div>
+            <div class="cal-check-x">
+              <button class="btn-x">✕</button>
+              <button class="btn-checkmark active">✓</button>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:20px;">
+          <button class="btn-chrome btn-chrome--primary" style="width:100%;justify-content:center;">Build My Prompt List →</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="citation-alert">
+          <div class="alert-icon">🎉</div>
+          <div class="alert-body">
+            <div class="alert-label">First Citation — ChatGPT</div>
+            <div class="alert-title">Bloom Collagen is now cited.</div>
+            <div class="alert-sub">Your brand appeared in ChatGPT for <em>"best collagen for joint pain"</em> — the prompt you targeted last week.</div>
+            <div class="alert-time">Just now · ChatGPT 4o</div>
+          </div>
+        </div>
+        <div class="citation-alert" style="border-color: #fca5a5;">
+          <div class="alert-icon">📊</div>
+          <div class="alert-body">
+            <div class="alert-label" style="color:#f59e0b;">Competitor Alert</div>
+            <div class="alert-title">Vital Proteins claimed 3 new prompts.</div>
+            <div class="alert-sub">They're now cited in <em>"collagen for gut health"</em> and 2 other prompts in your category. <strong>Act now to counter.</strong></div>
+            <div class="alert-time">2 hours ago · Perplexity</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SUGGESTION FEED (vidIQ pattern) ─────────────────────── -->
+  <section>
+    <div class="section-label">Daily Prompt Feed — vidIQ-Style Suggestion Cards</div>
+    <div class="suggestion-feed">
+
+      <div class="suggestion-card">
+        <div class="sc-header">
+          <div class="sc-type">
+            <div class="sc-icon sc-icon--prompt">🎯</div>
+            <span class="sc-type-label">Today's Prompt · Claim First</span>
+          </div>
+          <div class="sc-actions-top">
+            <span style="font-family:'DM Mono',monospace;font-size:10px;color:#22c55e;background:#f0fdf4;padding:4px 10px;border-radius:12px;border:1px solid #86efac;">No brand owns this yet</span>
+            <button class="sc-dismiss">✕</button>
+          </div>
+        </div>
+        <div class="sc-body">
+          <div class="sc-prompt-text">"What's the best <em>collagen for gut health</em> and bloating in 2025?"</div>
+          <div class="sc-meta">
+            <span class="sc-meta-item"><span class="sc-meta-dot"></span>ChatGPT — not cited</span>
+            <span class="sc-meta-item"><span class="sc-meta-dot sc-meta-dot--red"></span>Perplexity — not cited</span>
+            <span class="sc-meta-item" style="color:#6b6b6b;">Opportunity score: <strong style="color:#0a0a0a;">94/100</strong></span>
+          </div>
+          <div class="sc-content-suggestion">
+            <div class="sc-suggestion-label">Recommended Content</div>
+            <div class="sc-suggestion-text">Add a dedicated "Collagen for Gut Health" page with clinical study citations and a before/after FAQ. Brands cited for this prompt all have gut-specific content.</div>
+          </div>
+          <div class="sc-chips">
+            <div class="chip chip--selected">✓ Comparison guide</div>
+            <div class="chip chip--selected">✓ Clinical citations</div>
+            <div class="chip chip--default">FAQ section</div>
+            <div class="chip chip--default">Video embed</div>
+          </div>
+        </div>
+        <div class="sc-footer">
+          <div class="sc-footer-left">
+            <button class="btn-check">Generate content draft →</button>
+            <button class="btn-skip">Save for later</button>
+          </div>
+          <span class="sc-streak"><span class="streak-dot">🔥</span> Day 7 streak</span>
+        </div>
+      </div>
+
+      <div class="suggestion-card">
+        <div class="sc-header">
+          <div class="sc-type">
+            <div class="sc-icon sc-icon--brand">✍️</div>
+            <span class="sc-type-label">Brand Signal · Confirm or Edit</span>
+          </div>
+          <div class="sc-actions-top"><button class="sc-dismiss">✕</button></div>
+        </div>
+        <div class="sc-body">
+          <div class="sc-prompt-text">We updated your brand profile. Does this look right?</div>
+          <div class="sc-chips" style="gap: 10px;">
+            <div class="chip chip--confirm">✓ Marine collagen</div>
+            <div class="chip chip--confirm">✓ Joint health</div>
+            <div class="chip chip--confirm">✓ Women 35–55</div>
+            <div class="chip chip--reject">✕ Budget pricing</div>
+            <div class="chip chip--default">+ Add a signal</div>
+          </div>
+        </div>
+        <div class="sc-footer">
+          <div class="sc-footer-left">
+            <button class="btn-check">Confirm & update →</button>
+            <button class="btn-skip">Edit manually</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="locked-card">
+        <div class="locked-content">
+          <div class="sc-header">
+            <div class="sc-type">
+              <div class="sc-icon">🎯</div>
+              <span class="sc-type-label">High-Value Prompt · Competitor-Owned</span>
+            </div>
+          </div>
+          <div class="sc-body">
+            <div class="sc-prompt-text">"Which collagen brand do doctors actually recommend for women?"</div>
+            <div class="sc-meta">
+              <span class="sc-meta-item">Vital Proteins owns this · ChatGPT</span>
+            </div>
+          </div>
+        </div>
+        <div class="locked-overlay">
+          <div class="lock-icon">🔒</div>
+          <div class="lock-title">Starter plan limit reached</div>
+          <div class="lock-sub">You've used all 50 prompt slots. Vital Proteins owns 3 prompts you can't see yet. Upgrade to monitor and counter them.</div>
+          <button class="btn-upgrade">Upgrade to Growth — $349/mo</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── UPGRADE GATE ─────────────────────────────────────────── -->
+  <section>
+    <div class="section-label">Upgrade Gate Component</div>
+    <div class="upgrade-gate">
+      <div class="ug-left">
+        <div class="ug-label">You've hit the Starter limit</div>
+        <div class="ug-title">Your competitors aren't stopping.</div>
+        <div class="ug-sub">You've filled all 50 prompt slots and your AI Visibility Score is up 28 points. Vital Proteins is being cited for 12 prompts you're locked out of. Upgrade to see them — and take them.</div>
+        <div class="ug-features">
+          <div class="ug-feature">200 prompts monitored across 5 platforms</div>
+          <div class="ug-feature">One-click content generation per recommendation</div>
+          <div class="ug-feature">See why competitors are winning — and what to do</div>
+          <div class="ug-feature">Daily prompt drip + streak rewards</div>
+        </div>
+      </div>
+      <div class="ug-right">
+        <button class="btn-upgrade-large">
+          <div class="btn-ul-price">$349</div>
+          <div class="btn-ul-label">per month</div>
+          <div class="btn-ul-cta">Upgrade to Growth →</div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
