@@ -37,3 +37,6 @@ out/
 .cache/
 coverage/
 .nyc_output/
+
+# TypeScript incremental build artifacts
+*.tsbuildinfo
