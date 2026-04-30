@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cited — AI Ranking for DTC Brands</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,400;1,700&family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+
+    /* ─── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --bg-primary:    #f5f0e6;
+      --bg-card:       #ffffff;
+      --bg-elevated:   #faf5ea;
+      --bg-border:     #d8cfc0;
+      --ink-primary:   #0f1d2e;
+      --ink-secondary: #4a5568;
+      --ink-muted:     #8a8076;
+      --accent-rust:   #b84c2a;
+      --accent-rust-dim: #9a3f22;
+      --rust-wash:     rgba(184,76,42,0.08);
+      --caution:       #c9a84c;
+      --healthy:       #2a6b3c;
+      --font-display:  'Playfair Display', Georgia, serif;
+      --font-body:     'Inter', system-ui, sans-serif;
+      --font-mono:     'DM Mono', 'Courier New', monospace;
+      --radius:        4px;
+      --radius-hero:   8px;
+      --shadow-card:   0 1px 3px rgba(15,29,46,0.06);
+    }
+
+    /* ─── RESET & BASE ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-primary);
+      color: var(--ink-primary);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── LAYOUT ─────────────────────────────────────────────── */
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 40px; }
+    .container--narrow { max-width: 760px; margin: 0 auto; padding: 0 40px; }
+
+    /* ─── KICKER (mono uppercase label) ─────────────────────── */
+    .kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    /* ─── HEADINGS ───────────────────────────────────────────── */
+    h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.2; color: var(--ink-primary); }
+    h1 { font-size: clamp(44px, 6vw, 72px); line-height: 1.1; }
+    h2 { font-size: clamp(32px, 4vw, 48px); line-height: 1.15; }
+    h3 { font-size: 24px; font-weight: 700; }
+    p { color: var(--ink-secondary); line-height: 1.7; }
+
+    /* ─── BUTTONS ────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-body); font-size: 15px; font-weight: 600;
+      padding: 14px 28px; border-radius: var(--radius);
+      border: none; cursor: pointer; text-decoration: none;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn--primary { background: var(--ink-primary); color: var(--bg-primary); }
+    .btn--primary:hover { background: #07121f; }
+    .btn--rust { background: var(--accent-rust); color: var(--bg-primary); }
+    .btn--rust:hover { background: var(--accent-rust-dim); }
+    .btn--ghost {
+      background: transparent; color: var(--ink-primary);
+      border: 1px solid var(--bg-border);
+    }
+    .btn--ghost:hover { border-color: var(--ink-primary); }
+    .btn--lg { font-size: 17px; padding: 18px 36px; }
+
+    /* ─── TAGS ───────────────────────────────────────────────── */
+    .tag {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      background: var(--bg-elevated); border: 1px solid var(--bg-border);
+      color: var(--ink-secondary); border-radius: 2px; padding: 4px 10px;
+    }
+    .tag--critical { background: var(--accent-rust); color: var(--bg-primary); border-color: var(--accent-rust); }
+    .tag--caution { background: var(--caution); color: var(--ink-primary); border-color: var(--caution); }
+    .tag--healthy { background: var(--healthy); color: #fff; border-color: var(--healthy); }
+    .tag--missing { background: var(--rust-wash); color: var(--accent-rust); border-color: rgba(184,76,42,0.2); }
+    .tag--ranked { background: rgba(42,107,60,0.08); color: var(--healthy); border-color: rgba(42,107,60,0.2); }
+    .tag--partial { background: rgba(201,168,76,0.1); color: #8a6a10; border-color: rgba(201,168,76,0.3); }
+
+    /* ─── DIVIDER ────────────────────────────────────────────── */
+    .divider { height: 1px; background: var(--bg-border); margin: 0; }
+
+    /* ─────────────────────────────────────────────────────────── */
+    /* NAV                                                         */
+    /* ─────────────────────────────────────────────────────────── */
+    nav {
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--bg-border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 40px; max-width: 1120px; margin: 0 auto;
+    }
+    .nav-logo {
+      font-family: var(--font-display); font-size: 22px; font-weight: 800;
+      color: var(--ink-primary); text-decoration: none; letter-spacing: -0.01em;
+    }
+    .nav-logo span { color: var(--accent-rust); }
+    .nav-links {
+      display: flex; align-items: center; gap: 32px; list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--font-body); font-size: 14px; font-weight: 500;
+      color: var(--ink-secondary); text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--ink-primary); }
+    .nav-cta { display: flex; align-items: center; gap: 12px; }
+
+    /* ─────────────────────────────────────────────────────────── */
+    /* HERO                                                        */
+    /* ─────────────────────────────────────────────────────────── */
+    .hero {
+      padding: 112px 40px 96px;
+      max-width: 1120px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    }
+    .hero-text {}
+    .hero-text h1 { margin-bottom: 24px; letter-spacing: -0.02em; }
+    .hero-text h1 em { font-style: italic; color: var(--accent-rust); }
+    .hero-subhead {
+      font-size: 18px; color: var(--ink-secondary); line-height: 1.65;
+      margin-bottom: 40px; max-width: 480px;
+    }
+    .hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .hero-note {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+      color: var(--ink-muted); letter-spacing: 0.06em; margin-top: 16px;
+    }
+
+    /* Hero visual — chat mock */
+    .hero-visual {
+      background: var(--bg-card); border: 1px solid var(--bg-border);
+      border-radius: var(--radius-hero); padding: 0;
+      box-shadow: 0 4px 24px rgba(15,29,46,0.08);
+      overflow: hidden;
+    }
+    .chat-header {
+      background: var(--bg-elevated); border-bottom: 1px solid var(--bg-border);
+      padding: 14px 20px; display: flex; align-items: center; gap: 10px;
+    }
+    .chat-dots { display: flex; gap: 6px; }
+    .chat-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--bg-border); }
+    .chat-platform {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.1em; color: var(--ink-muted); text-transform: uppercase;
+      margin-left: auto;
+    }
+    .chat-body { padding: 28px 24px; display: flex; flex-direction: column; gap: 20px; }
+    .chat-message {
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .chat-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .chat-avatar--user { background: var(--ink-primary); color: var(--bg-primary); }
+    .chat-avatar--ai { background: var(--bg-elevated); border: 1px solid var(--bg-border); color: var(--ink-secondary); }
+    .chat-bubble {
+      background: var(--bg-elevated); border: 1px solid var(--bg-border);
+      border-radius: var(--radius); padding: 12px 16px;
+      font-size: 13px; color: var(--ink-primary); line-height: 1.55;
+    }
+    .chat-bubble strong { color: var(--ink-primary); }
+    .chat-bubble--user { background: var(--bg-primary); }
+    .chat-cited {
+      background: rgba(42,107,60,0.06); border: 1px solid rgba(42,107,60,0.18);
+      border-left: 3px solid var(--healthy);
+      border-radius: var(--radius); padding: 10px 14px;
+      font-size: 12px; color: var(--healthy);
+      font-family: var(--font-mono); font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .chat-missing {
+      background: var(--rust-wash); border: 1px solid rgba(184,76,42,0.2);
+      border-left: 3px solid var(--accent-rust);
+      border-radius: var(--radius); padding: 10px 14px;
+      font-size: 12px; color: var(--accent-rust);
+      font-family: var(--font-mono); font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    /* ─────────────────────────────────────────────────────────── */
+    /* STATS BAR                                                   */
+    /* ─────────────────────────────────────────────────────────── */
+    .stats-bar {
+      border-top: 1px solid var(--bg-border);
+      border-bottom: 1px solid var(--bg-border);
+      background: var(--bg-card);
+      padding: 40px 0;
+    }
+    .stats-inner {
+      max-width: 1120px; margin: 0 auto; padding: 0 40px;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+    .stat-item {
+      padding: 0 48px; text-align: center;
+    }
+    .stat-item + .stat-item { border-left: 1px solid var(--bg-border); }
+    .stat-number {
+      font-family: var(--font-mono); font-size: 52px; font-weight: 700;
+      color: var(--accent-rust); line-height: 1; display: block;
+    }
+    .stat-label {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink-muted); display: block; margin-top: 8px;
+    }
+    .stat-sub {
+      font-size: 13px; color: var(--ink-secondary); margin-top: 6px; line-height: 1.4;
+    }
+
+    /* ─────────────────────────────────────────────────────────── */
+    /* PROBLEM SECTION                                             */
+    /* ─────────────────────────────────────────────────────────── */
+    .section { padding: 112px 0; }
+    .section-alt { background: var(--bg-card); }
+
+    .problem-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;
+    }
+    .problem-left h2 { margin-bottom: 24px; }
+    .problem-left p { font-size: 17px; margin-bottom: 20px; }
+    .problem-stat {
+      margin-top: 40px; padding: 28px 32px;
+      background: var(--bg-elevated); border: 1px solid var(--bg-border);
+      border-left: 3px solid var(--accent-rust);
+      border-radius: var(--radius);
+    }
+    .problem-stat .stat-number { font-size: 40px; }
+
+    .problem-right { display: flex; flex-direction: column; gap: 20px; padding-top: 56px; }
+    .problem-card {
+      background: var(--bg-card); border: 1px solid var(--bg-border);
+      border-radius: var(--radius); padding: 28px 32px;
+      box-shadow: var(--shadow-card);
+    }
+    .problem-card h4 { font-family: var(--font-display); font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .problem-card p { font-size: 14px; }
+    .problem-card--verdict { border-left: 3px solid var(--accent-rust); }
+    .problem-card--caution { border-left: 3px solid var(--caution); }
+
+    /* ─────────────────────────────────────────────────────────── */
+    /* HOW IT WORKS                                                */
+    /* ─────────────────────────────────────────────────────────── */
+    .how-header { text-align: center; margin-bottom: 72px; }
+    .how-header h2 { margin-bottom: 16px; }
+    .how-header p { font-size: 18px; max-width: 560px; margin: 0 auto; }
+
+    .steps-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
+      background: var(--bg-border); border-radius: var(--radius-hero);
+      overflow: hidden;
+    }
+    .step {
+      background: var(--bg-card); padding: 40px 32px;
+      position: relative;
+    }
+    .step-number {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ink-muted); margin-bottom: 24px; display: block;
+    }
+    .step-icon {
+      width: 48px; height: 48px; border-radius: var(--radius);
+      background: var(--bg-elevated); border: 1px solid var(--bg-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 20px;
+    }
+    .step h3 { font-size: 18px; font-weight: 700; font-family: var(--font-body); margin-bottom: 12px; }
+    .step p { font-size: 14px; line-height: 1.6; }
+    .step-detail {
+      margin-top: 20px; padding-top: 20px;
+      border-top: 1px solid var(--bg-border);
+    }
+    .step-detail li {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+      color: var(--ink-muted); letter-spacing: 0.06em;
+      list-style: none; padding: 4px 0;
+      display: flex; gap: 8px; align-items: center;
+    }
+    .step-detail li::before { content: '→'; color: var(--accent-rust); font-weight: 700; }
+
+    /* ─────────────────────────────────────────────────────────── */
+    /* DASHBOARD PREVIEW                                           */
+    /* ─────────────────────────────────────────────────────────── */
+    .dashboard-section {
+      background: var(--ink-primary);
+      padding: 112px 0;
+    }
+    .dashboard-section .kicker { color: rgba(245,240,230,0.5); }
+    .dashboard-section h2 { color: var(--bg-primary); margin-bottom: 16px; }
+    .dashboard-section > .container > p {
+      color: rgba(245,240,230,0.65); font-size: 18px; margin-bottom: 56px; max-width: 540px;
+    }
+
+    .dashboard-chrome {
+      background: var(--bg-card); border-radius: var(--radius-hero);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    .dash-topbar {
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--bg-border);
+      padding: 14px 24px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .dash-dots { display: flex; gap: 6px; }
+    .dash-dot { width: 11px; height: 11px; border-radius: 50%; background: var(--bg-border); }
+    .dash-url {
+      flex: 1; background: var(--bg-primary); border: 1px solid var(--bg-border);
+      border-radius: var(--radius); padding: 6px 14px;
+      font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted);
+    }
+
+    .dash-body { display: grid; grid-template-columns: 240px 1fr 280px; min-height: 560px; }
+
+    /* Sidebar */
+    .dash-sidebar {
+      border-right: 1px solid var(--bg-border);
+      background: var(--bg-elevated); padding: 28px 0;
+    }
+    .dash-brand {
+      padding: 0 24px 24px; border-bottom: 1px solid var(--bg-border);
+    }
+    .dash-brand-name {
+      font-family: var(--font-body); font-size: 14px; font-weight: 600;
+      color: var(--ink-primary); margin-bottom: 4px;
+    }
+    .dash-brand-cat {
+      font-family: var(--font-mono); font-size: 10px; color: var(--ink-muted);
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .score-ring-wrap {
+      padding: 24px; border-bottom: 1px solid var(--bg-border);
+      text-align: center;
+    }
+    .score-ring {
+      width: 100px; height: 100px; border-radius: 50%;
+      border: 6px solid var(--bg-border);
+      position: relative; margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      border-color: var(--accent-rust);
+    }
+    .score-ring-num {
+      font-family: var(--font-mono); font-size: 28px; font-weight: 700;
+      color: var(--accent-rust);
+    }
+    .score-ring-denom {
+      font-family: var(--font-mono); font-size: 13px; color: var(--ink-muted);
+    }
+    .score-label {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-rust);
+      margin-bottom: 4px;
+    }
+    .score-sub { font-size: 12px; color: var(--ink-muted); }
+
+    .dash-platforms { padding: 20px 24px; }
+    .platform-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 0;
+      font-size: 13px;
+    }
+    .platform-name { color: var(--ink-secondary); font-family: var(--font-body); }
+    .platform-pct { font-family: var(--font-mono); font-size: 12px; font-weight: 700; }
+    .platform-bar { height: 3px; border-radius: 2px; background: var(--bg-border); margin-top: 4px; }
+    .platform-bar-fill { height: 3px; border-radius: 2px; }
+    .pct-low { color: var(--accent-rust); }
+    .pct-mid { color: var(--caution); }
+    .pct-ok  { color: var(--healthy); }
+    .fill-low { background: var(--accent-rust); }
+    .fill-mid { background: var(--caution); }
+    .fill-ok  { background: var(--healthy); }
+
+    /* Main panel */
+    .dash-main { border-right: 1px solid var(--bg-border); }
+    .dash-main-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--bg-border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .dash-main-title {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted);
+    }
+    .dash-tab-row {
+      padding: 0 24px;
+      border-bottom: 1px solid var(--bg-border);
+      display: flex; gap: 0;
+    }
+    .dash-tab {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted);
+      padding: 12px 16px; cursor: pointer;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+    }
+    .dash-tab--active { color: var(--ink-primary); border-bottom-color: var(--ink-primary); }
+
+    .prompt-table { width: 100%; border-collapse: collapse; }
+    .prompt-table th {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted);
+      text-align: left; padding: 12px 24px;
+      border-bottom: 1px solid var(--bg-border);
+      background: var(--bg-elevated);
+    }
+    .prompt-table td {
+      padding: 14px 24px; border-bottom: 1px solid var(--bg-border);
+      font-size: 13px; color: var(--ink-primary);
+    }
+    .prompt-table tr:hover td { background: var(--bg-elevated); }
+    .prompt-text { font-size: 13px; color: var(--ink-primary); max-width: 200px; }
+    .prompt-platform { font-family: var(--font-mono); font-size: 10px; }
+    .dash-action-btn {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: var(--accent-rust); color: var(--bg-primary);
+      border: none; border-radius: 2px; padding: 5px 10px; cursor: pointer;
+      white-space: nowrap;
+    }
+    .dash-watch-btn {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: transparent; color: var(--ink-muted);
+      border: 1px solid var(--bg-border); border-radius: 2px; padding: 5px 10px;
+    }
+
+    /* Right panel — recommendations */
+    .dash-recs { padding: 24px; }
+    .recs-title {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted);
+      margin-bottom: 20px;
+    }
+    .rec-card {
+      background: var(--bg-elevated); border: 1px solid var(--bg-border);
+      border-radius: var(--radius); padding: 16px;
+      margin-bottom: 12px;
+    }
+    .rec-card--urgent { border-left: 3px solid var(--accent-rust); }
+    .rec-card--medium { border-left: 3px solid var(--caution); }
+    .rec-card--low { border-left: 3px solid var(--healthy); }
+    .rec-impact {
+      font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      margin-bottom: 6px; display: block;
+    }
+    .rec-impact--urgent { color: var(--accent-rust); }
+    .rec-impact--medium { color: #8a6a10; }
+    .rec-impact--low { color: var(--healthy); }
+    .rec-text { font-size: 12px; color: var(--ink-primary); line-height: 1.5; margin-bottom: 10px; }
+    .rec-cta {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-primary);
+      text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+    }
+    .rec-divider { height: 1px; background: var(--bg-border); margin: 20px 0; }
+    .comp-title {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted);
+      margin-bottom: 14px;
+    }
+    .comp-row { margin-bottom: 10px; }
+    .comp-label { font-size: 12px; color: var(--ink-secondary); margin-bottom: 4px; display: flex; justify-content: space-between; }
+    .comp-pct { font-family: var(--font-mono); font-size: 11px; font-weight: 700; }
+    .comp-bar { height: 4px; border-radius: 2px; background: var(--bg-border); }
+    .comp-bar-fill { height: 4px; border-radius: 2px; }
+
+    /* ─────────────────────────────────────────────────────────── */
+    /* PLATFORMS SECTION                                           */
+    /* ─────────────────────────────────────────────────────────── */
+    .platforms-section { padding: 80px 0; border-top: 1px solid var(--bg-border); }
+    .platforms-inner {
+      max-width: 1120px; margin: 0 auto; padding: 0 40px;
+      display: flex; align-items: center; gap: 48px; flex-wrap: wrap;
+    }
+    .platforms-label {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted);
+      white-space: nowrap;
+    }
+    .platforms-list { display: flex; align-items: center; gap: 40px; flex-wrap: wrap; }
+    .platform-badge {
+      font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+      letter-spacing: 0.08em; color: var(--ink-secondary);
+    }
+
+    /* ─────────────────────────────────────────────────────────── */
+    /* USE CASES SECTION                                           */
+    /* ─────────────────────────────────────────────────────────── */
+    .usecases-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+      margin-top: 64px;
+    }
+    .usecase-card {
+      background: var(--bg-card); border: 1px solid var(--bg-border);
+      border-radius: var(--radius); padding: 36px 32px;
+      box-shadow: var(--shadow-card);
+    }
+    .usecase-category {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted);
+      margin-bottom: 16px; display: block;
+    }
+    .usecase-prompt {
+      font-family: var(--font-display); font-style: italic;
+      font-size: 17px; font-weight: 400; color: var(--ink-primary);
+      line-height: 1.45; margin-bottom: 20px;
+      border-left: 2px solid var(--bg-border); padding-left: 16px;
+    }
+    .usecase-verdict {
+      font-size: 13px; color: var(--ink-secondary); line-height: 1.5;
+    }
+    .usecase-verdict strong { color: var(--accent-rust); }
+
+    /* ─────────────────────────────────────────────────────────── */
+    /* PRICING                                                     */
+    /* ─────────────────────────────────────────────────────────── */
+    .pricing-header { text-align: center; margin-bottom: 64px; }
+    .pricing-header h2 { margin-bottom: 16px; }
+    .pricing-header p { font-size: 18px; max-width: 520px; margin: 0 auto; }
+
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
+    .pricing-card {
+      background: var(--bg-card); border: 1px solid var(--bg-border);
+      border-radius: var(--radius-hero); padding: 40px 36px;
+      box-shadow: var(--shadow-card); position: relative;
+    }
+    .pricing-card--featured {
+      border-color: var(--ink-primary); border-width: 2px;
+    }
+    .featured-badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--ink-primary); color: var(--bg-primary);
+      font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 4px 14px; border-radius: 2px; white-space: nowrap;
+    }
+    .plan-name {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ink-muted); margin-bottom: 12px; display: block;
+    }
+    .plan-price {
+      font-family: var(--font-mono); font-size: 48px; font-weight: 700;
+      color: var(--ink-primary); line-height: 1; margin-bottom: 4px;
+    }
+    .plan-price sup { font-size: 24px; font-weight: 500; vertical-align: top; margin-top: 8px; }
+    .plan-period { font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted); margin-bottom: 24px; }
+    .plan-desc { font-size: 14px; color: var(--ink-secondary); margin-bottom: 32px; line-height: 1.55; }
+    .plan-features { list-style: none; margin-bottom: 36px; }
+    .plan-features li {
+      font-size: 14px; color: var(--ink-secondary);
+      padding: 9px 0; border-bottom: 1px solid var(--bg-border);
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .plan-features li::before {
+      content: '✓'; color: var(--healthy); font-weight: 700; flex-shrink: 0;
+    }
+    .plan-features li.unavailable { opacity: 0.4; }
+    .plan-features li.unavailable::before { content: '—'; color: var(--ink-muted); }
+
+    /* ─────────────────────────────────────────────────────────── */
+    /* FINAL CTA SECTION                                           */
+    /* ─────────────────────────────────────────────────────────── */
+    .final-cta {
+      background: var(--ink-primary);
+      padding: 120px 0; text-align: center;
+    }
+    .final-cta .kicker { color: rgba(245,240,230,0.45); text-align: center; }
+    .final-cta h2 { color: var(--bg-primary); margin-bottom: 20px; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .final-cta p { color: rgba(245,240,230,0.65); font-size: 18px; margin-bottom: 48px; max-width: 520px; margin-left: auto; margin-right: auto; }
+    .final-cta-actions { display: flex; justify-content: center; gap: 16px; align-items: center; flex-wrap: wrap; }
+    .final-note { font-family: var(--font-mono); font-size: 11px; color: rgba(245,240,230,0.4); margin-top: 20px; letter-spacing: 0.06em; }
+
+    /* ─────────────────────────────────────────────────────────── */
+    /* FOOTER                                                      */
+    /* ─────────────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--bg-border);
+      padding: 40px 40px; background: var(--bg-primary);
+    }
+    .footer-inner {
+      max-width: 1120px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-brand {
+      font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--ink-primary);
+    }
+    .footer-brand span { color: var(--accent-rust); }
+    .footer-meta {
+      font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted);
+      letter-spacing: 0.06em; text-align: right;
+    }
+    .footer-links {
+      display: flex; gap: 24px; list-style: none;
+    }
+    .footer-links a {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--ink-muted); text-decoration: none;
+    }
+    .footer-links a:hover { color: var(--ink-primary); }
+
+    /* ─────────────────────────────────────────────────────────── */
+    /* BLUEPRINT ANNOTATION BANNER                                 */
+    /* ─────────────────────────────────────────────────────────── */
+    .blueprint-banner {
+      background: var(--caution); color: var(--ink-primary);
+      padding: 12px 40px; text-align: center;
+      font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+    }
+
+    /* Utility */
+    .text-center { text-align: center; }
+    .mt-8 { margin-top: 8px; }
+    .mt-16 { margin-top: 16px; }
+    .mb-0 { margin-bottom: 0; }
+
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- BLUEPRINT ANNOTATION                                        -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="blueprint-banner">
+    ⬡ Product Blueprint — Cited · AEO Platform for DTC Brands · Irreverent Marketing ⬡
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- NAV                                                         -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">Cited<span>.</span></a>
+      <ul class="nav-links">
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#dashboard">Dashboard</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#">Sign In</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="#" class="btn btn--ghost" style="font-size:14px; padding: 10px 20px;">Sign In</a>
+        <a href="#" class="btn btn--rust" style="font-size:14px; padding: 10px 20px;">Analyze My Brand →</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- HERO                                                        -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <section>
+    <div class="hero">
+      <div class="hero-text">
+        <span class="kicker">LLM Visibility for DTC Brands</span>
+        <h1>When someone asks AI what to buy —<br><em>are you the answer?</em></h1>
+        <p class="hero-subhead">
+          Cited scans your category across ChatGPT, Perplexity, and Gemini. It finds every question your customers are asking AI about your product. Then it tells you exactly how to become the brand they recommend.
+        </p>
+        <div class="hero-actions">
+          <a href="#" class="btn btn--rust btn--lg">Analyze My Brand — Free →</a>
+          <a href="#dashboard" class="btn btn--ghost btn--lg">See the Dashboard</a>
+        </div>
+        <p class="hero-note">No SEO knowledge required &nbsp;·&nbsp; 2-minute setup &nbsp;·&nbsp; Results in 24 hours</p>
+      </div>
+
+      <!-- Chat mockup -->
+      <div class="hero-visual">
+        <div class="chat-header">
+          <div class="chat-dots">
+            <div class="chat-dot"></div>
+            <div class="chat-dot"></div>
+            <div class="chat-dot"></div>
+          </div>
+          <span class="chat-platform">ChatGPT — 4o</span>
+        </div>
+        <div class="chat-body">
+          <div class="chat-message">
+            <div class="chat-avatar chat-avatar--user">U</div>
+            <div class="chat-bubble chat-bubble--user">
+              "What's the best collagen supplement for women over 40 with joint pain?"
+            </div>
+          </div>
+          <div class="chat-message">
+            <div class="chat-avatar chat-avatar--ai">AI</div>
+            <div class="chat-bubble">
+              Based on clinical research and user reviews, the top options for women over 40 with joint pain are: <strong>Vital Proteins, Sports Research, and Ancient Nutrition.</strong> These brands consistently cite peer-reviewed studies and have strong bioavailability data...
+            </div>
+          </div>
+          <div class="chat-missing">
+            ✕ &nbsp; Your brand was not mentioned in this response
+          </div>
+          <div style="margin-top: 4px; border-top: 1px solid var(--bg-border); padding-top: 16px;">
+            <span class="kicker" style="margin-bottom: 8px;">After Cited optimization</span>
+            <div class="chat-cited">
+              ✓ &nbsp; Your brand appears in 8 of 10 similar purchase-intent prompts
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- STATS BAR                                                   -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <span class="stat-number">2.47%</span>
+        <span class="stat-label">LLM Traffic Conversion Rate</span>
+        <p class="stat-sub">Higher than paid social and paid search. This is the highest-intent traffic on the internet.</p>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">60%+</span>
+        <span class="stat-label">Queries resolve without a click</span>
+        <p class="stat-sub">AI delivers the answer directly. If you're not in that answer, you don't exist to that buyer.</p>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">0</span>
+        <span class="stat-label">DTC tools built for this — until now</span>
+        <p class="stat-sub">Every other AEO tool was built for enterprise SEO teams. Not for DTC operators.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PROBLEM SECTION                                             -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="container">
+      <div class="problem-grid">
+        <div class="problem-left">
+          <span class="kicker">The Visibility Gap</span>
+          <h2>You rank #1 on Google. You're invisible on AI.</h2>
+          <p>These are two completely different systems. ChatGPT doesn't check Google rankings. It pulls from what it was trained on — editorial reviews, comparison guides, clinical studies, structured product content.</p>
+          <p>If that content doesn't exist for your brand, you don't exist to AI. And increasingly, AI is where your buyers make their final decisions.</p>
+          <div class="problem-stat">
+            <span class="kicker" style="margin-bottom: 8px;">Purchase intent research</span>
+            <span class="stat-number" style="color: var(--accent-rust);">73%</span>
+            <span class="stat-label" style="margin-top: 8px;">of shoppers consult AI before buying a health &amp; wellness product</span>
+          </div>
+        </div>
+        <div class="problem-right">
+          <div class="problem-card problem-card--verdict">
+            <span class="kicker" style="margin-bottom: 8px;">The Old Playbook</span>
+            <h4>SEO was enough.</h4>
+            <p>Rank for keywords. Drive organic traffic. Win on Google. That worked when Google was where decisions happened. It still matters — but it's no longer the whole game.</p>
+          </div>
+          <div class="problem-card problem-card--caution">
+            <span class="kicker" style="margin-bottom: 8px;">The New Reality</span>
+            <h4>AI answers are where decisions are made.</h4>
+            <p>Your buyer types "best collagen for joint pain" into ChatGPT. They get 3 brand names. None of them are yours. They order from one of those 3. You never knew it happened.</p>
+          </div>
+          <div class="problem-card" style="border-left: 3px solid var(--healthy);">
+            <span class="kicker" style="margin-bottom: 8px;">The Opportunity</span>
+            <h4>Most of your competitors aren't doing this yet.</h4>
+            <p>The brands that get cited in AI answers in the next 12 months will own those recommendations for years. Being early here is a structural advantage.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- USE CASES                                                   -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <section class="section section-alt">
+    <div class="container">
+      <span class="kicker text-center">What Your Customers Are Asking AI</span>
+      <h2 class="text-center" style="margin-bottom: 16px;">These are real prompts. Is your brand in any of them?</h2>
+      <p class="text-center" style="font-size: 17px; max-width: 580px; margin: 0 auto;">Cited has pre-built prompt libraries for 40+ DTC product categories. Drop in your brand. See where you stand in 24 hours.</p>
+      <div class="usecases-grid">
+        <div class="usecase-card">
+          <span class="usecase-category">Collagen &amp; Supplements</span>
+          <div class="usecase-prompt">"What's the best collagen supplement for gut health and skin in 2025?"</div>
+          <p class="usecase-verdict"><strong>12% of DTC collagen brands</strong> appear in AI answers to this prompt. The other 88% are invisible — including most that rank on Google.</p>
+        </div>
+        <div class="usecase-card">
+          <span class="usecase-category">Skincare &amp; Beauty</span>
+          <div class="usecase-prompt">"What skincare routine do dermatologists actually recommend for hyperpigmentation?"</div>
+          <p class="usecase-verdict"><strong>Brands with clinical citations and comparison content</strong> dominate these answers. Pure product-page brands are almost never cited.</p>
+        </div>
+        <div class="usecase-card">
+          <span class="usecase-category">Apparel &amp; DTC Fashion</span>
+          <div class="usecase-prompt">"What's the best sustainable activewear brand that isn't just greenwashing?"</div>
+          <p class="usecase-verdict"><strong>Brands with editorial coverage and third-party audits</strong> get cited. Brands with great Instagram pages don't. Cited tells you the difference.</p>
+        </div>
+        <div class="usecase-card">
+          <span class="usecase-category">Pet Health</span>
+          <div class="usecase-prompt">"What probiotic for dogs actually works based on vet recommendations?"</div>
+          <p class="usecase-verdict"><strong>Vet-backed claims and structured FAQ content</strong> are the #1 driver of AI citations in the pet health category. Most brands don't have either.</p>
+        </div>
+        <div class="usecase-card">
+          <span class="usecase-category">Home &amp; Cleaning</span>
+          <div class="usecase-prompt">"What non-toxic cleaning products are actually safe for kids and pets?"</div>
+          <p class="usecase-verdict"><strong>Ingredient transparency content</strong> drives AI citation in this category. Brands with a dedicated "What's In It" page are cited 4x more.</p>
+        </div>
+        <div class="usecase-card">
+          <span class="usecase-category">Food &amp; Beverage</span>
+          <div class="usecase-prompt">"What protein powder is best for women who don't want to bulk up?"</div>
+          <p class="usecase-verdict"><strong>Comparison guides and persona-specific content</strong> own these answers. Generic "high protein low calorie" product pages don't make the cut.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- HOW IT WORKS                                                -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <section class="section" id="how">
+    <div class="container">
+      <div class="how-header">
+        <span class="kicker">The System</span>
+        <h2>From invisible to cited — in four steps.</h2>
+        <p>You enter your URL. We handle everything else. No SEO degree required.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step">
+          <span class="step-number">Step 01</span>
+          <div class="step-icon">🔍</div>
+          <h3>We crawl your brand</h3>
+          <p>Enter your URL. Cited reads your product pages, reviews, FAQs, and customer language to understand your brand, your category, and your competitors.</p>
+          <ul class="step-detail">
+            <li>Reads product pages &amp; descriptions</li>
+            <li>Extracts customer review language (VOC)</li>
+            <li>Maps your category &amp; competitor set</li>
+            <li>Identifies your current AI footprint</li>
+          </ul>
+        </div>
+        <div class="step">
+          <span class="step-number">Step 02</span>
+          <div class="step-icon">📊</div>
+          <h3>We show you where you stand</h3>
+          <p>Your Cited score. Which prompts your competitors own. Exactly which purchase-intent questions in your category you're invisible in — across every major AI platform.</p>
+          <ul class="step-detail">
+            <li>AI Visibility Score (0–100)</li>
+            <li>Prompt gap analysis by platform</li>
+            <li>Competitor share of voice breakdown</li>
+            <li>Category ranking vs. named competitors</li>
+          </ul>
+        </div>
+        <div class="step">
+          <span class="step-number">Step 03</span>
+          <div class="step-icon">✍️</div>
+          <h3>We tell you exactly what to fix</h3>
+          <p>Not vague "optimize your content" advice. Cited gives you specific pages to create, exact content structures that drive AI citations, and one-click drafts to get started.</p>
+          <ul class="step-detail">
+            <li>Prioritized content action plan</li>
+            <li>AI-citation-optimized page templates</li>
+            <li>One-click draft generation per recommendation</li>
+            <li>Schema &amp; structure guidance</li>
+          </ul>
+        </div>
+        <div class="step">
+          <span class="step-number">Step 04</span>
+          <div class="step-icon">📈</div>
+          <h3>We track your rank movement</h3>
+          <p>Weekly visibility reports. Watch your AI citation rate climb across ChatGPT, Perplexity, Gemini, and Google AI Mode as you implement. Know what's working.</p>
+          <ul class="step-detail">
+            <li>Daily prompt monitoring</li>
+            <li>Citation rate trends by platform</li>
+            <li>Competitor rank change alerts</li>
+            <li>Monthly share-of-voice report</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PLATFORM COVERAGE                                           -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="platforms-section">
+    <div class="platforms-inner">
+      <span class="platforms-label">Monitors your brand across</span>
+      <div class="platforms-list">
+        <span class="platform-badge">ChatGPT</span>
+        <span class="platform-badge">Perplexity</span>
+        <span class="platform-badge">Gemini</span>
+        <span class="platform-badge">Google AI Mode</span>
+        <span class="platform-badge">Microsoft Copilot</span>
+        <span class="platform-badge">Claude</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- DASHBOARD PREVIEW                                           -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <section class="dashboard-section" id="dashboard">
+    <div class="container">
+      <span class="kicker">The Dashboard</span>
+      <h2>Everything you need. Nothing you don't.</h2>
+      <p>Built for operators, not analysts. Your AI visibility score, prompt gaps, competitor benchmarks, and content recommendations — all in one place.</p>
+
+      <!-- Browser chrome wrapper -->
+      <div class="dashboard-chrome">
+
+        <!-- Top bar -->
+        <div class="dash-topbar">
+          <div class="dash-dots">
+            <div class="dash-dot" style="background:#e57373;"></div>
+            <div class="dash-dot" style="background:#ffb74d;"></div>
+            <div class="dash-dot" style="background:#81c784;"></div>
+          </div>
+          <div class="dash-url">app.cited.co/dashboard/bloom-collagen</div>
+        </div>
+
+        <!-- Three-panel layout -->
+        <div class="dash-body">
+
+          <!-- LEFT: Sidebar -->
+          <div class="dash-sidebar">
+            <div class="dash-brand">
+              <div class="dash-brand-name">Bloom Collagen</div>
+              <div class="dash-brand-cat">Collagen · Supplements</div>
+            </div>
+            <div class="score-ring-wrap">
+              <div class="score-ring">
+                <div>
+                  <span class="score-ring-num">34</span>
+                  <span class="score-ring-denom">/100</span>
+                </div>
+              </div>
+              <div class="score-label">AI Visibility</div>
+              <div class="score-sub">Critical — 7 of 10 key<br>prompts unranked</div>
+            </div>
+            <div class="dash-platforms">
+              <div style="font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 14px;">By Platform</div>
+              <div class="platform-row" style="flex-direction: column; align-items: flex-start;">
+                <div style="display:flex; justify-content:space-between; width:100%;">
+                  <span class="platform-name" style="font-size:12px;">ChatGPT</span>
+                  <span class="platform-pct pct-low">12%</span>
+                </div>
+                <div class="platform-bar" style="width:100%; margin-top:5px;"><div class="platform-bar-fill fill-low" style="width:12%;"></div></div>
+              </div>
+              <div class="platform-row" style="flex-direction: column; align-items: flex-start; margin-top:10px;">
+                <div style="display:flex; justify-content:space-between; width:100%;">
+                  <span class="platform-name" style="font-size:12px;">Perplexity</span>
+                  <span class="platform-pct pct-low">8%</span>
+                </div>
+                <div class="platform-bar" style="width:100%; margin-top:5px;"><div class="platform-bar-fill fill-low" style="width:8%;"></div></div>
+              </div>
+              <div class="platform-row" style="flex-direction: column; align-items: flex-start; margin-top:10px;">
+                <div style="display:flex; justify-content:space-between; width:100%;">
+                  <span class="platform-name" style="font-size:12px;">Gemini</span>
+                  <span class="platform-pct pct-mid">23%</span>
+                </div>
+                <div class="platform-bar" style="width:100%; margin-top:5px;"><div class="platform-bar-fill fill-mid" style="width:23%;"></div></div>
+              </div>
+              <div class="platform-row" style="flex-direction: column; align-items: flex-start; margin-top:10px;">
+                <div style="display:flex; justify-content:space-between; width:100%;">
+                  <span class="platform-name" style="font-size:12px;">Google AI Mode</span>
+                  <span class="platform-pct pct-mid">31%</span>
+                </div>
+                <div class="platform-bar" style="width:100%; margin-top:5px;"><div class="platform-bar-fill fill-mid" style="width:31%;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CENTER: Prompt table -->
+          <div class="dash-main">
+            <div class="dash-main-header">
+              <span class="dash-main-title">Prompt Monitoring — 50 Active</span>
+              <span class="tag">Updated 2h ago</span>
+            </div>
+            <div class="dash-tab-row">
+              <div class="dash-tab dash-tab--active">All Prompts</div>
+              <div class="dash-tab">Missing</div>
+              <div class="dash-tab">Ranked</div>
+              <div class="dash-tab">Opportunities</div>
+            </div>
+            <table class="prompt-table">
+              <thead>
+                <tr>
+                  <th>Prompt</th>
+                  <th>ChatGPT</th>
+                  <th>Perplexity</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="prompt-text">"best collagen supplement for women"</span></td>
+                  <td><span class="tag tag--missing">Missing</span></td>
+                  <td><span class="tag tag--missing">Missing</span></td>
+                  <td><button class="dash-action-btn">Fix Now</button></td>
+                </tr>
+                <tr>
+                  <td><span class="prompt-text">"collagen peptides for joint pain 2025"</span></td>
+                  <td><span class="tag tag--missing">Missing</span></td>
+                  <td><span class="tag tag--ranked">Cited</span></td>
+                  <td><button class="dash-action-btn">Optimize</button></td>
+                </tr>
+                <tr>
+                  <td><span class="prompt-text">"does collagen help with skin elasticity"</span></td>
+                  <td><span class="tag tag--ranked">Cited</span></td>
+                  <td><span class="tag tag--ranked">Cited</span></td>
+                  <td><button class="dash-watch-btn">Monitor</button></td>
+                </tr>
+                <tr>
+                  <td><span class="prompt-text">"collagen vs whey protein — which is better"</span></td>
+                  <td><span class="tag tag--missing">Missing</span></td>
+                  <td><span class="tag tag--missing">Missing</span></td>
+                  <td><button class="dash-action-btn">Fix Now</button></td>
+                </tr>
+                <tr>
+                  <td><span class="prompt-text">"best collagen for gut health and bloating"</span></td>
+                  <td><span class="tag tag--partial">Partial</span></td>
+                  <td><span class="tag tag--missing">Missing</span></td>
+                  <td><button class="dash-action-btn">Optimize</button></td>
+                </tr>
+                <tr>
+                  <td><span class="prompt-text">"collagen supplement reviews — what do doctors say"</span></td>
+                  <td><span class="tag tag--missing">Missing</span></td>
+                  <td><span class="tag tag--partial">Partial</span></td>
+                  <td><button class="dash-action-btn">Fix Now</button></td>
+                </tr>
+                <tr>
+                  <td><span class="prompt-text">"marine collagen vs bovine — which absorbs better"</span></td>
+                  <td><span class="tag tag--missing">Missing</span></td>
+                  <td><span class="tag tag--missing">Missing</span></td>
+                  <td><button class="dash-action-btn">Fix Now</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- RIGHT: Recommendations + competitors -->
+          <div class="dash-recs">
+            <div class="recs-title">Top Recommendations</div>
+
+            <div class="rec-card rec-card--urgent">
+              <span class="rec-impact rec-impact--urgent">⬆ High Impact</span>
+              <p class="rec-text">Create a "Best Collagen Supplements" comparison guide — you're losing 4 high-intent prompts to brands with this page.</p>
+              <a href="#" class="rec-cta">Generate Draft →</a>
+            </div>
+
+            <div class="rec-card rec-card--urgent">
+              <span class="rec-impact rec-impact--urgent">⬆ High Impact</span>
+              <p class="rec-text">Add clinical study citations to your collagen + joint pain product page. AI pulls from sources that cite research.</p>
+              <a href="#" class="rec-cta">See Template →</a>
+            </div>
+
+            <div class="rec-card rec-card--medium">
+              <span class="rec-impact rec-impact--medium">→ Quick Win</span>
+              <p class="rec-text">Add a "Marine vs. Bovine Collagen" FAQ section to your homepage. 3 prompts are being answered by this comparison.</p>
+              <a href="#" class="rec-cta">Generate FAQ →</a>
+            </div>
+
+            <div class="rec-card rec-card--low">
+              <span class="rec-impact rec-impact--low">↗ Foundation</span>
+              <p class="rec-text">Optimize your existing "Gut Health" blog post with structured data. You're partially cited — this seals it.</p>
+              <a href="#" class="rec-cta">See Changes →</a>
+            </div>
+
+            <div class="rec-divider"></div>
+            <div class="comp-title">Competitor Share of Voice</div>
+
+            <div class="comp-row">
+              <div class="comp-label"><span>Vital Proteins</span><span class="comp-pct" style="color:var(--ink-secondary);">71%</span></div>
+              <div class="comp-bar"><div class="comp-bar-fill" style="width:71%; background:var(--ink-secondary);"></div></div>
+            </div>
+            <div class="comp-row">
+              <div class="comp-label"><span>Sports Research</span><span class="comp-pct" style="color:var(--caution);">58%</span></div>
+              <div class="comp-bar"><div class="comp-bar-fill" style="width:58%; background:var(--caution);"></div></div>
+            </div>
+            <div class="comp-row">
+              <div class="comp-label"><span>Ancient Nutrition</span><span class="comp-pct" style="color:var(--caution);">44%</span></div>
+              <div class="comp-bar"><div class="comp-bar-fill" style="width:44%; background:var(--caution);"></div></div>
+            </div>
+            <div class="comp-row">
+              <div class="comp-label"><span style="color:var(--accent-rust); font-weight:600;">Bloom Collagen</span><span class="comp-pct" style="color:var(--accent-rust);">34%</span></div>
+              <div class="comp-bar"><div class="comp-bar-fill" style="width:34%; background:var(--accent-rust);"></div></div>
+            </div>
+          </div>
+
+        </div><!-- end dash-body -->
+      </div><!-- end dashboard-chrome -->
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PRICING                                                     -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <section class="section" id="pricing">
+    <div class="container">
+      <div class="pricing-header">
+        <span class="kicker">Pricing</span>
+        <h2>Straightforward. No contracts. No BS.</h2>
+        <p>Start with a free brand analysis. Upgrade when you're ready to rank.</p>
+      </div>
+      <div class="pricing-grid">
+
+        <!-- Starter -->
+        <div class="pricing-card">
+          <span class="plan-name">Starter</span>
+          <div class="plan-price"><sup>$</sup>149</div>
+          <div class="plan-period">per month</div>
+          <p class="plan-desc">For brands ready to understand their AI footprint and start building visibility.</p>
+          <ul class="plan-features">
+            <li>50 prompt slots across your category</li>
+            <li>3 platforms (ChatGPT, Perplexity, Gemini)</li>
+            <li>AI Visibility Score + weekly report</li>
+            <li>Competitor share-of-voice (3 competitors)</li>
+            <li>Basic content recommendations</li>
+            <li class="unavailable">Content draft generation</li>
+            <li class="unavailable">Google AI Mode + Copilot tracking</li>
+            <li class="unavailable">API access</li>
+          </ul>
+          <a href="#" class="btn btn--ghost" style="width:100%; justify-content:center;">Start Free Trial</a>
+        </div>
+
+        <!-- Growth — featured -->
+        <div class="pricing-card pricing-card--featured">
+          <div class="featured-badge">Most Popular</div>
+          <span class="plan-name">Growth</span>
+          <div class="plan-price"><sup>$</sup>349</div>
+          <div class="plan-period">per month</div>
+          <p class="plan-desc">For brands actively competing for AI citations. Full monitoring, full recommendations, one-click content.</p>
+          <ul class="plan-features">
+            <li>200 prompt slots across your category</li>
+            <li>5 platforms (all major AI answer engines)</li>
+            <li>AI Visibility Score + daily monitoring</li>
+            <li>Competitor share-of-voice (10 competitors)</li>
+            <li>Prioritized content action plan</li>
+            <li>One-click content draft generation</li>
+            <li>VOC language extraction from your reviews</li>
+            <li>Prompt-level citation explanation ("why them, not you")</li>
+          </ul>
+          <a href="#" class="btn btn--rust" style="width:100%; justify-content:center;">Start Free Trial →</a>
+        </div>
+
+        <!-- Agency -->
+        <div class="pricing-card">
+          <span class="plan-name">Agency / Scale</span>
+          <div class="plan-price"><sup>$</sup>897</div>
+          <div class="plan-period">per month</div>
+          <p class="plan-desc">For agencies managing multiple DTC brands, or brands running 6+ product lines across categories.</p>
+          <ul class="plan-features">
+            <li>Unlimited prompt monitoring</li>
+            <li>All platforms + new platforms as they launch</li>
+            <li>Up to 10 brands / client workspaces</li>
+            <li>White-label reports (your agency brand)</li>
+            <li>API access for custom integrations</li>
+            <li>Dedicated onboarding call</li>
+            <li>Priority support (Slack channel)</li>
+            <li>Custom prompt library build-out</li>
+          </ul>
+          <a href="#" class="btn btn--primary" style="width:100%; justify-content:center;">Book a Demo</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- FINAL CTA                                                   -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <section class="final-cta">
+    <div class="container">
+      <span class="kicker">The Window Is Open</span>
+      <h2>The brands that get cited in the next 12 months will own those answers for years.</h2>
+      <p style="margin-bottom: 48px;">Being early on AI search is the same advantage as being early on Google SEO in 2008. The window doesn't stay open.</p>
+      <div class="final-cta-actions">
+        <a href="#" class="btn btn--rust btn--lg">Analyze My Brand Free →</a>
+        <a href="#" class="btn btn--ghost btn--lg" style="color: var(--bg-primary); border-color: rgba(245,240,230,0.25);">See a Demo First</a>
+      </div>
+      <p class="final-note">No credit card required &nbsp;·&nbsp; Free brand audit in 2 minutes &nbsp;·&nbsp; Cancel any time</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- FOOTER                                                      -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-brand">Cited<span>.</span></span>
+      <ul class="footer-links">
+        <li><a href="#">How It Works</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">Terms</a></li>
+      </ul>
+      <div class="footer-meta">
+        © 2026 Cited &nbsp;·&nbsp; An Irreverent Marketing Product<br>
+        <span style="color: var(--accent-rust);">AEO for DTC Brands</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
